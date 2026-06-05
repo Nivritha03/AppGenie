@@ -13,7 +13,6 @@
 ---
 
 **🌐 Live Demo:** `[Deployment Link — Coming Soon]`
-**📂 Repository:** `[GitHub Link — Coming Soon]`
 
 </div>
 
