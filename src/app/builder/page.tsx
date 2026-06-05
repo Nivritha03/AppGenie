@@ -233,7 +233,6 @@ export default function AppBuilder() {
           </div>
         </div>
       </div>
-      </div>
     </div>
   );
 }
