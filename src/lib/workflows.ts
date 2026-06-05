@@ -15,7 +15,7 @@ export interface WorkflowPayload {
   userId: string;
   trigger: WorkflowTrigger;
   entityName: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
 }
 
 /**

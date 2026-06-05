@@ -30,7 +30,7 @@ export const AppConfigSchema = z.object({
 
 export type ValidatedAppConfig = z.infer<typeof AppConfigSchema>;
 
-export function validateConfig(config: any) {
+export function validateConfig(config: unknown) {
   try {
     return { success: true, data: AppConfigSchema.parse(config) };
   } catch (error) {

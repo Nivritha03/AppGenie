@@ -4,7 +4,7 @@ export interface AppRecord {
   id: string;
   appId: string;
   entityName: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
 }
@@ -23,7 +23,7 @@ async function createRecord({
   entityName,
 }: {
   appId: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   entityName: string;
 }): Promise<AppRecord> {
   const res = await fetch(`/api/apps/${appId}/records`, {

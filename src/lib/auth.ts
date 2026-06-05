@@ -5,7 +5,7 @@ import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "@/lib/prisma";
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma) as any,
+  adapter: PrismaAdapter(prisma) as unknown as import("next-auth/adapters").Adapter,
   providers: [
     // Credentials for local development/testing
     CredentialsProvider({
@@ -58,7 +58,7 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (token && session.user) {
-        (session.user as any).id = token.sub!;
+        (session.user as { id?: string }).id = token.sub!;
       }
       return session;
     },
