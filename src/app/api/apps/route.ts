@@ -34,11 +34,30 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "name and config are required" }, { status: 400 });
     }
 
+    const userId = (session.user as any).id;
+
     const app = await prisma.app.create({
       data: {
         name,
         config,
-        userId: (session.user as any).id,
+        userId,
+      },
+    });
+
+    // Auto-seed a default workflow: notify user whenever a record is created
+    await prisma.workflow.create({
+      data: {
+        trigger: "RECORD_CREATED",
+        action: "SEND_NOTIFICATION",
+        appId: app.id,
+      },
+    });
+
+    // Send an immediate "app created" notification
+    await prisma.notification.create({
+      data: {
+        userId,
+        message: `🎉 Your app "${name}" was created successfully and is ready to use!`,
       },
     });
 
