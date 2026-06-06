@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -32,7 +32,7 @@ import {
   Input
 } from "@/components/ui";
 
-export default function Dashboard() {
+function DashboardContent() {
   const { data: session } = useSession();
   const searchParams = useSearchParams();
   const activeTab = searchParams.get("tab") || "active";
@@ -63,8 +63,8 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-transparent">
-        <div className="relative h-16 w-16">
+      <div className="flex min-h-[400px] items-center justify-center bg-transparent">
+        <div className="relative h-12 w-12">
           <div className="absolute inset-0 rounded-full border-4 border-emerald-500/20" />
           <div className="absolute inset-0 animate-spin rounded-full border-4 border-emerald-500 border-t-transparent" />
         </div>
@@ -286,5 +286,20 @@ export default function Dashboard() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Dashboard() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center bg-transparent p-12">
+        <div className="relative h-16 w-16">
+          <div className="absolute inset-0 rounded-full border-4 border-emerald-500/20" />
+          <div className="absolute inset-0 animate-spin rounded-full border-4 border-emerald-500 border-t-transparent" />
+        </div>
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
   );
 }
