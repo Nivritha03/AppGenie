@@ -12,7 +12,7 @@
 
 ---
 
-**🌐 Live Demo:** `[Deployment Link — Active on Vercel]`
+**🌐 Live Demo:** `https://appgenie-zeta.vercel.app/`
 
 </div>
 
