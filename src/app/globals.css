@@ -1,5 +1,5 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
 
 @theme {
   --color-background: hsl(var(--background));
@@ -52,12 +52,16 @@
     --border: 215 20% 15%;
     --input: 215 20% 15%;
     --ring: 160 84% 39%;
+
+    --glow-start: 160 84% 39%;
+    --glow-end: 174 84% 41%;
   }
 }
 
 @layer base {
   * {
     @apply border-white/5;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.2s ease, box-shadow 0.3s ease;
   }
   html {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -68,8 +72,8 @@
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
     background-image:
-      radial-gradient(circle at 20% 20%, rgba(16, 185, 129, 0.06), transparent 50%),
-      radial-gradient(circle at 80% 80%, rgba(20, 184, 166, 0.06), transparent 50%);
+      radial-gradient(circle at 20% 20%, hsl(var(--glow-start) / 0.06), transparent 50%),
+      radial-gradient(circle at 80% 80%, hsl(var(--glow-end) / 0.06), transparent 50%);
     background-attachment: fixed;
   }
 }

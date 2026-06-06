@@ -1,22 +1,42 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { 
   Plus, 
-  LayoutGrid, 
   Search, 
   Clock, 
   ChevronRight, 
   Box, 
   ExternalLink,
   Sparkles,
-  LogOut
+  TrendingUp,
+  AppWindow,
+  Cpu,
+  Layers,
+  Trash2
 } from "lucide-react";
+import { 
+  AnimatedCard, 
+  AnimatedNumber, 
+  StaggerContainer, 
+  StaggerItem,
+  GlassContainer,
+  Glow,
+  Badge,
+  Button,
+  Input
+} from "@/components/ui";
 
 export default function Dashboard() {
   const { data: session } = useSession();
+  const searchParams = useSearchParams();
+  const activeTab = searchParams.get("tab") || "active";
+  
   const [apps, setApps] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -34,158 +54,237 @@ export default function Dashboard() {
     app.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const stats = [
+    { label: "Total Apps", value: apps.length, icon: AppWindow, color: "text-emerald-400" },
+    { label: "Generations", value: apps.length * 12 + 5, icon: Sparkles, color: "text-teal-400" },
+    { label: "AI Tokens", value: apps.length * 150, icon: Cpu, color: "text-emerald-500" },
+    { label: "Uptime", value: 99.9, icon: TrendingUp, color: "text-teal-500", suffix: "%" },
+  ];
+
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin"></div>
+      <div className="flex min-h-screen items-center justify-center bg-transparent">
+        <div className="relative h-16 w-16">
+          <div className="absolute inset-0 rounded-full border-4 border-emerald-500/20" />
+          <div className="absolute inset-0 animate-spin rounded-full border-4 border-emerald-500 border-t-transparent" />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-emerald-500/30 overflow-hidden relative">
+    <div className="relative min-h-screen p-6 md:p-10 lg:p-12">
+      <Glow className="top-0 right-0 w-[500px] h-[500px] opacity-10" />
       
-      {/* Ambient Vibe Coder Background */}
-      <div className="fixed inset-0 pointer-events-none -z-10">
-        <div className="absolute top-[20%] left-[20%] w-[600px] h-[600px] bg-emerald-600/10 rounded-full blur-[150px] mix-blend-screen animate-float"></div>
-        <div className="absolute bottom-[10%] right-[30%] w-[500px] h-[500px] bg-teal-600/10 rounded-full blur-[120px] mix-blend-screen animate-float" style={{ animationDelay: '3s' }}></div>
-      </div>
-
-      <nav className="border-b border-white/5 bg-slate-950/60 backdrop-blur-2xl sticky top-0 z-30 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 group">
-             <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.3)] group-hover:scale-105 transition-transform">
-                <Sparkles className="w-5 h-5 text-slate-950" />
-             </div>
-             <span className="font-black text-xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400">AppGenie</span>
-          </Link>
-          
-          <div className="flex items-center gap-3">
-             {session?.user && (
-               <>
-                 <div className="hidden sm:flex items-center gap-3 bg-white/5 border border-white/10 rounded-full pl-1.5 pr-4 py-1.5 backdrop-blur-md shadow-lg">
-                   {session.user.image ? (
-                     <img src={session.user.image} alt="Profile" className="w-8 h-8 rounded-full border border-emerald-500/50 object-cover" />
-                   ) : (
-                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500/20 to-teal-500/20 text-emerald-300 flex items-center justify-center font-bold border border-emerald-500/30">
-                       {session.user.name?.charAt(0) || "U"}
-                     </div>
-                   )}
-                   <div className="flex flex-col">
-                     <span className="text-sm font-semibold text-slate-100">{session.user.name}</span>
-                     <span className="text-[10px] text-emerald-400 uppercase tracking-widest leading-none mt-0.5 flex items-center gap-1">
-                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block"></span>
-                       Online
-                     </span>
-                   </div>
-                 </div>
-                 <button
-                   onClick={() => signOut({ callbackUrl: "/login" })}
-                   title="Sign out"
-                   className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/8 hover:bg-red-500/10 hover:border-red-500/20 text-slate-500 hover:text-red-400 transition-all duration-200 text-sm font-semibold group"
-                 >
-                   <LogOut className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                   <span className="hidden sm:inline">Sign out</span>
-                 </button>
-               </>
-             )}
+      <header className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div>
+          <div className="mb-4 flex items-center gap-2">
+            <Badge variant="success">Pro Plan</Badge>
+            <span className="text-xs font-bold uppercase tracking-widest text-slate-500">Workspace v2.0</span>
           </div>
+          <h1 className="text-3xl font-black tracking-tight text-white md:text-4xl lg:text-5xl">
+            Welcome back, <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">{session?.user?.name?.split(' ')[0] || "Genie"}</span>
+          </h1>
+          <p className="mt-4 max-w-2xl text-base font-medium text-slate-400">
+            Your AI-powered application workspace. Architect, deploy, and scale with ease.
+          </p>
         </div>
-      </nav>
+        
+        <Button 
+          variant="premium" 
+          size="default"
+          onClick={() => window.location.href = '/builder'}
+          className="group"
+        >
+          <Plus className="mr-2 h-4 w-4 transition-transform group-hover:rotate-90" />
+          Create New App
+        </Button>
+      </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-12 relative z-10">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
-          <div>
-            <h1 className="text-4xl md:text-5xl font-black mb-3 drop-shadow-sm">My Applications</h1>
-            <p className="text-slate-400 font-medium text-lg">Manage and monitor your generated AI apps.</p>
-          </div>
-          
-          <Link 
-            href="/builder"
-            className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all active:scale-95 hover:-translate-y-1"
-          >
-            <Plus className="w-5 h-5" />
-            Create New App
-          </Link>
-        </div>
+      {/* Stats Grid */}
+      <StaggerContainer className="mb-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {stats.map((stat, idx) => (
+          <StaggerItem key={idx}>
+            <GlassContainer className="p-5 transition-all hover:border-emerald-500/30">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">{stat.label}</p>
+                  <h3 className="mt-1 text-2xl font-black text-white">
+                    <AnimatedNumber value={stat.value} />
+                    {stat.suffix}
+                  </h3>
+                </div>
+                <div className={cn("rounded-xl bg-white/5 p-2.5", stat.color)}>
+                  <stat.icon className="h-5 w-5" />
+                </div>
+              </div>
+            </GlassContainer>
+          </StaggerItem>
+        ))}
+      </StaggerContainer>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-            <div className="md:col-span-3 relative group">
-                <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-emerald-400 transition-colors" />
-                <input 
-                    type="text" 
-                    placeholder="Search your generated applications..."
+      {/* Main Content Area */}
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
+        {/* Apps List / Content */}
+        <div className="lg:col-span-2">
+          {activeTab === "active" && (
+            <>
+              <div className="mb-6 flex items-center justify-between">
+                <h2 className="text-xl font-black text-white">Active Applications</h2>
+                <div className="relative w-64">
+                  <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-500" />
+                  <Input 
+                    placeholder="Search apps..." 
+                    className="pl-9 text-sm"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-14 pr-6 py-4 bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all text-white placeholder:text-slate-500 shadow-inner"
-                />
+                  />
+                </div>
+              </div>
+
+              {filteredApps.length === 0 ? (
+                <GlassContainer className="flex flex-col items-center justify-center border-dashed p-16 text-center">
+                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/10 shadow-[0_0_30px_rgba(16,185,129,0.1)]">
+                    <Box className="h-8 w-8 text-emerald-400" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white">No apps found</h3>
+                  <p className="mt-1 max-w-xs text-sm text-slate-400">
+                    Start your journey by creating your first AI-generated application.
+                  </p>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="mt-6"
+                    onClick={() => window.location.href = '/builder'}
+                  >
+                    Go to Builder
+                  </Button>
+                </GlassContainer>
+              ) : (
+                <StaggerContainer className="grid grid-cols-1 gap-6 sm:grid-cols-1">
+                  {filteredApps.map((app) => (
+                    <StaggerItem key={app.id}>
+                      <div className="group relative">
+                        <Link href={`/app/${app.id}`}>
+                          <AnimatedCard className="flex items-center gap-5 p-5">
+                            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400 shadow-inner group-hover:bg-emerald-500/20 transition-colors">
+                              <Layers className="h-7 w-7" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2.5">
+                                <h3 className="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors">{app.name}</h3>
+                                <Badge variant="success" className="text-[10px] h-4">Active</Badge>
+                              </div>
+                              <div className="mt-1.5 flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                                <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> Updated 2h ago</span>
+                                <span>•</span>
+                                <span>Internal Tool</span>
+                              </div>
+                            </div>
+                            <div className="hidden items-center gap-1.5 text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity md:flex">
+                              <span className="text-xs font-bold">Open</span>
+                              <ChevronRight className="h-4 w-4" />
+                            </div>
+                          </AnimatedCard>
+                        </Link>
+                        <button 
+                          onClick={async (e) => {
+                            e.preventDefault();
+                            if (confirm("Are you sure you want to delete this app?")) {
+                              await fetch(`/api/apps/${app.id}`, { method: 'DELETE' });
+                              setApps(apps.filter(a => a.id !== app.id));
+                            }
+                          }}
+                          className="absolute -top-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full bg-red-500/10 text-red-500 opacity-0 transition-all hover:bg-red-500 hover:text-white group-hover:opacity-100"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </StaggerItem>
+                  ))}
+                </StaggerContainer>
+              )}
+            </>
+          )}
+
+          {activeTab === "settings" && (
+            <div className="space-y-5">
+              <h2 className="text-xl font-black text-white">Workspace Settings</h2>
+              <GlassContainer className="p-0 overflow-hidden">
+                <div className="border-b border-white/5 p-5">
+                   <h3 className="text-base font-bold text-white">General Preferences</h3>
+                   <p className="text-xs text-slate-400">Manage your workspace configuration and notification settings.</p>
+                </div>
+                <div className="p-5 space-y-5">
+                   <div className="flex items-center justify-between">
+                      <div>
+                         <p className="text-sm font-bold text-white">Auto-Deployment</p>
+                         <p className="text-xs text-slate-400">Automatically deploy changes when config is saved.</p>
+                      </div>
+                      <div className="h-5 w-9 rounded-full bg-emerald-500/20 relative cursor-pointer">
+                         <div className="absolute right-1 top-1 h-3 w-3 rounded-full bg-emerald-400" />
+                      </div>
+                   </div>
+                   <div className="flex items-center justify-between">
+                      <div>
+                         <p className="text-sm font-bold text-white">Analytics Sharing</p>
+                         <p className="text-xs text-slate-400">Help improve AppGenie by sharing anonymous usage data.</p>
+                      </div>
+                      <div className="h-5 w-9 rounded-full bg-white/5 relative cursor-pointer">
+                         <div className="absolute left-1 top-1 h-3 w-3 rounded-full bg-slate-500" />
+                      </div>
+                   </div>
+                </div>
+              </GlassContainer>
             </div>
-            <div className="flex items-center gap-3 px-4 py-3 bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl focus-within:ring-2 focus-within:ring-emerald-500/50 transition-all">
-                <LayoutGrid className="w-5 h-5 text-emerald-400 shrink-0" />
-                <select className="bg-transparent text-sm font-semibold focus:outline-none w-full text-slate-200 cursor-pointer [&>option]:bg-slate-900 [&>option]:text-white">
-                    <option value="recent">Recently Modified</option>
-                    <option value="az">Name A-Z</option>
-                </select>
-            </div>
+          )}
         </div>
 
-        {filteredApps.length === 0 ? (
-          <div className="text-center py-32 bg-slate-900/40 backdrop-blur-md border border-dashed border-white/10 rounded-[2.5rem]">
-             <div className="w-24 h-24 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-8 shadow-[0_0_30px_rgba(16,185,129,0.1)]">
-                <Box className="w-10 h-10 text-emerald-400" />
-             </div>
-             <h3 className="text-3xl font-bold mb-4">No applications found</h3>
-             <p className="text-slate-400 max-w-md mx-auto mb-10 text-lg">
-               {searchTerm ? "No results match your search parameters." : "Your workspace is empty. Start your journey by architecting your first AI application."}
-             </p>
-             <Link href="/builder" className="inline-flex items-center gap-2 text-emerald-400 font-bold hover:text-emerald-300 transition-colors group text-lg">
-               Enter Builder
-               <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-             </Link>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredApps.map((app, idx) => (
-              <Link 
-                key={app.id}
-                href={`/app/${app.id}`}
-                className="group relative bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-3xl p-8 transition-all hover:bg-slate-800/60 hover:border-emerald-500/30 overflow-hidden hover:-translate-y-2 hover:shadow-2xl animate-in fade-in slide-in-from-bottom-8"
-                style={{ animationDelay: `${idx * 100}ms`, animationFillMode: 'both' }}
+        {/* Sidebar info */}
+        <div className="space-y-6">
+           <GlassContainer className="p-6">
+              <h3 className="text-lg font-black text-white">AI Utilization</h3>
+              <div className="mt-5 space-y-5">
+                {[
+                  { label: "Gemini 1.5 Pro", usage: 75, color: "bg-emerald-500" },
+                  { label: "Database Storage", usage: 30, color: "bg-teal-500" },
+                  { label: "API Requests", usage: 45, color: "bg-emerald-400" },
+                ].map((item, i) => (
+                  <div key={i}>
+                    <div className="mb-1.5 flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
+                       <span className="text-slate-300">{item.label}</span>
+                       <span className="text-emerald-400">{item.usage}%</span>
+                    </div>
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/5">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: `${item.usage}%` }}
+                        transition={{ duration: 1, delay: i * 0.2 }}
+                        className={cn("h-full rounded-full", item.color)} 
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+           </GlassContainer>
+
+           <GlassContainer className="relative overflow-hidden p-6">
+              <Glow className="-right-10 top-0 h-32 w-32 opacity-20" />
+              <h3 className="text-lg font-black text-white">Need inspiration?</h3>
+              <p className="mt-1 text-xs font-medium text-slate-400">
+                Check out the community templates and see what others are building.
+              </p>
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="mt-5 w-full"
+                onClick={() => window.open('https://vercel.com/templates', '_blank')}
               >
-                <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0">
-                    <ExternalLink className="w-5 h-5 text-emerald-400" />
-                </div>
-
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-
-                <div className="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-inner group-hover:bg-emerald-500/20">
-                   <Box className="w-8 h-8 text-emerald-400" />
-                </div>
-                
-                <h3 className="text-2xl font-bold mb-2 truncate group-hover:text-emerald-50 transition-colors">{app.name}</h3>
-                <div className="flex items-center gap-2 text-slate-500 text-xs font-bold uppercase tracking-widest mb-10">
-                    <Clock className="w-3.5 h-3.5 text-emerald-500/50 group-hover:text-emerald-400 transition-colors" />
-                    v1.0.0 • Updated 2h ago
-                </div>
-
-                <div className="flex items-center justify-between pt-6 border-t border-white/5">
-                   <div className="flex -space-x-2">
-                       {[1,2,3].map(i => (
-                           <div key={i} className="w-8 h-8 rounded-full border-2 border-slate-900 bg-emerald-950 flex items-center justify-center text-[10px] font-bold text-emerald-400 shadow-sm">
-                               {String.fromCharCode(64 + i)}
-                           </div>
-                       ))}
-                   </div>
-                   <div className="flex items-center gap-1.5 text-sm font-bold text-emerald-400 group-hover:text-emerald-300">
-                      Open App
-                      <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                   </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
-      </main>
+                Explore Templates
+              </Button>
+           </GlassContainer>
+        </div>
+      </div>
     </div>
   );
 }

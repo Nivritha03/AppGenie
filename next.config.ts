@@ -8,9 +8,6 @@ const withPWA = require("next-pwa")({
 
 const nextConfig: any = {
   /* config options here */
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   turbopack: {},
 };
 
