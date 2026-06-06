@@ -16,7 +16,8 @@ import {
   X,
   Sparkles,
   RefreshCw,
-  ChevronRight
+  ChevronRight,
+  Zap
 } from "lucide-react";
 import Link from "next/link";
 import Papa from "papaparse";
@@ -245,6 +246,10 @@ export default function AppDetails() {
             </div>
 
             <div className="flex items-center gap-3">
+              <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-emerald-500/5 border border-emerald-500/10 rounded-xl">
+                 <Zap className="w-3.5 h-3.5 text-emerald-500 animate-pulse" />
+                 <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Automation Active</span>
+              </div>
               <label className="flex items-center gap-2 px-5 py-2.5 glass hover:bg-white/5 border border-white/10 hover:border-emerald-500/20 rounded-xl text-sm font-semibold cursor-pointer transition-all duration-200 group hover:-translate-y-0.5">
                 <Upload className="w-4 h-4 text-slate-400 group-hover:text-emerald-400 transition-colors" />
                 <span className="text-slate-400 group-hover:text-slate-200 transition-colors">CSV Import</span>

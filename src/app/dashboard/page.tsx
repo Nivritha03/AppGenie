@@ -18,7 +18,10 @@ import {
   AppWindow,
   Cpu,
   Layers,
-  Trash2
+  Trash2,
+  Bell,
+  CheckCircle2,
+  Zap
 } from "lucide-react";
 import { 
   AnimatedCard, 
@@ -38,16 +41,19 @@ function DashboardContent() {
   const activeTab = searchParams.get("tab") || "active";
   
   const [apps, setApps] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    fetch("/api/apps")
-      .then((res) => res.json())
-      .then((data) => {
-        setApps(data);
-        setIsLoading(false);
-      });
+    Promise.all([
+      fetch("/api/apps").then(res => res.json()),
+      fetch("/api/notifications").then(res => res.json())
+    ]).then(([appsData, notifsData]) => {
+      setApps(appsData);
+      setNotifications(notifsData);
+      setIsLoading(false);
+    });
   }, []);
 
   const filteredApps = apps.filter(app => 
@@ -205,6 +211,52 @@ function DashboardContent() {
                 </StaggerContainer>
               )}
             </>
+          )}
+
+          {activeTab === "notifications" && (
+            <div className="space-y-5">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-black text-white">System Notifications</h2>
+                <Badge variant="success" className="h-5 text-[10px]">Workflow Active</Badge>
+              </div>
+              
+              {notifications.length === 0 ? (
+                <GlassContainer className="flex flex-col items-center justify-center p-16 text-center border-dashed">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-white/5">
+                    <Bell className="h-5 w-5 text-slate-500" />
+                  </div>
+                  <h3 className="text-lg font-bold text-white">All caught up!</h3>
+                  <p className="text-xs text-slate-400">Zero unread system alerts. Your app workflows are running in the background.</p>
+                </GlassContainer>
+              ) : (
+                <div className="space-y-3">
+                  {notifications.map((notif, idx) => (
+                    <motion.div
+                      key={notif.id}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.05 }}
+                    >
+                      <GlassContainer className="p-4 flex items-start gap-4 hover:border-emerald-500/30 transition-all">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400">
+                          <Zap className="h-5 w-5" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm font-bold text-white">{notif.message}</p>
+                            <span className="text-[10px] text-slate-500">{new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                          </div>
+                          <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-emerald-500/60 flex items-center gap-1.5">
+                            <span className="h-1 w-1 rounded-full bg-emerald-500" />
+                            Workflow Automation Triggered
+                          </p>
+                        </div>
+                      </GlassContainer>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </div>
           )}
 
           {activeTab === "settings" && (

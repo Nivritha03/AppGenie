@@ -15,7 +15,8 @@ import {
   AppWindow,
   History,
   Home as HomeIcon,
-  User
+  User,
+  Bell
 } from "lucide-react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -29,6 +30,7 @@ const MENU_ITEMS = [
   { icon: HomeIcon, label: "Home", href: "/" },
   { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
   { icon: PlusSquare, label: "AI Builder", href: "/builder" },
+  { icon: Bell, label: "Notifications", href: "/dashboard?tab=notifications" },
   { icon: Settings, label: "Settings", href: "/dashboard?tab=settings" },
 ];
 
@@ -77,9 +79,10 @@ export function Sidebar() {
           const isHome = item.label === "Home" && pathname === "/";
           const isDashboard = item.label === "Dashboard" && pathname === "/dashboard" && !search;
           const isBuilder = item.label === "AI Builder" && pathname === "/builder";
+          const isNotifications = item.label === "Notifications" && pathname === "/dashboard" && search.includes("tab=notifications");
           const isSettings = item.label === "Settings" && pathname === "/dashboard" && search.includes("tab=settings");
           
-          const active = isHome || isDashboard || isBuilder || isSettings;
+          const active = isHome || isDashboard || isBuilder || isNotifications || isSettings;
           return (
             <Link
               key={item.href}
