@@ -11,6 +11,7 @@ import {
   StaggerContainer,
   StaggerItem
 } from "@/components/ui";
+import { GenieLampIcon } from "@/components/AppGenieLogo";
 
 const features = [
   { icon: Zap, label: "AI Generation" },
@@ -43,7 +44,11 @@ export default function LoginPage() {
 
                 <StaggerItem>
                   <h1 className="text-4xl font-black tracking-tight text-white">
-                    Welcome to <ShimmerText text="AppGenie" />
+                    Welcome to{" "}
+                    <span className="inline-flex items-center gap-2 align-middle">
+                      <GenieLampIcon size={48} className="text-white" />
+                      <ShimmerText text="AppGenie" />
+                    </span>
                   </h1>
                   <p className="mt-4 text-lg font-medium text-slate-400">
                     Your AI-powered application workspace.

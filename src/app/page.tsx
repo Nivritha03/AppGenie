@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { Sparkles, Zap, Shield, AppWindow, ArrowRight, Code, Database, Cpu } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { SignOutButton } from "@/components/SignOutButton";
+import { GenieLampIcon } from "@/components/AppGenieLogo";
 import { 
   Button, 
   Badge, 
@@ -31,7 +32,10 @@ export default function Home() {
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
               <Sparkles className="h-5 w-5 text-slate-950" />
             </div>
-            <span className="text-xl font-black tracking-tight text-white">AppGenie</span>
+            <span className="inline-flex items-center gap-2 text-xl font-black tracking-tight text-white">
+              <GenieLampIcon size={32} />
+              AppGenie
+            </span>
           </div>
           
           <div className="flex items-center gap-6">
@@ -73,7 +77,10 @@ export default function Home() {
             <StaggerItem>
               <p className="mx-auto mt-8 max-w-2xl text-xl font-medium leading-relaxed text-slate-400">
                 Transform natural language into powerful, production-grade applications.
-                AppGenie handles the architecture, database, and UI — you handle the vision.
+                <span className="inline-flex items-center gap-1.5 align-middle text-slate-400">
+                  <GenieLampIcon size={26} className="-mt-0.5" />
+                  AppGenie
+                </span>{" "}handles the architecture, database, and UI — you handle the vision.
               </p>
             </StaggerItem>
 
@@ -282,8 +289,10 @@ export default function Home() {
               <Sparkles className="h-6 w-6 text-emerald-500/50" />
               <div className="h-px w-24 bg-gradient-to-l from-transparent to-white/10" />
            </div>
-           <p className="text-xs font-bold uppercase tracking-widest text-slate-500">
-             © 2026 AppGenie AI Platform · Engineered for Excellence
+           <p className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-slate-500">
+             © 2026
+             <GenieLampIcon size={20} />
+             AppGenie AI Platform · Engineered for Excellence
            </p>
            <div className="mt-8 flex justify-center gap-8 text-xs font-bold text-slate-600">
               <span className="hover:text-emerald-400 cursor-pointer transition-colors">Privacy</span>

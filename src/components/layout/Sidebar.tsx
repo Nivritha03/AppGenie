@@ -21,6 +21,7 @@ import {
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { signOut } from "next-auth/react";
+import { GenieLampIcon } from "@/components/AppGenieLogo";
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -58,7 +59,10 @@ export function Sidebar() {
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[hsl(var(--glow-start))] to-[hsl(var(--glow-end))] shadow-lg">
                 <Sparkles className="h-4 w-4 text-white dark:text-slate-950" />
               </div>
-              <span className="text-lg font-black tracking-tight text-foreground">AppGenie</span>
+              <span className="inline-flex items-center gap-2 text-lg font-black tracking-tight text-foreground">
+                <GenieLampIcon size={28} />
+                AppGenie
+              </span>
             </motion.div>
           )}
           {isCollapsed && (

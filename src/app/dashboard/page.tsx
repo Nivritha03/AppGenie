@@ -34,6 +34,7 @@ import {
   Button,
   Input
 } from "@/components/ui";
+import { GenieLampIcon } from "@/components/AppGenieLogo";
 
 function DashboardContent() {
   const { data: session } = useSession();
@@ -280,7 +281,14 @@ function DashboardContent() {
                    <div className="flex items-center justify-between">
                       <div>
                          <p className="text-sm font-bold text-white">Analytics Sharing</p>
-                         <p className="text-xs text-slate-400">Help improve AppGenie by sharing anonymous usage data.</p>
+                          <p className="text-xs text-slate-400 inline-flex items-center gap-1 flex-wrap">
+                            Help improve
+                            <span className="inline-flex items-center gap-1.5 text-slate-400">
+                              <GenieLampIcon size={18} />
+                              AppGenie
+                            </span>
+                            by sharing anonymous usage data.
+                          </p>
                       </div>
                       <div className="h-5 w-9 rounded-full bg-white/5 relative cursor-pointer">
                          <div className="absolute left-1 top-1 h-3 w-3 rounded-full bg-slate-500" />

@@ -24,6 +24,7 @@ import Papa from "papaparse";
 import { DashboardRenderer } from "@/components/dynamic/DashboardRenderer";
 import { AppErrorBoundary } from "@/components/dynamic/ErrorBoundary";
 import { SignOutButton } from "@/components/SignOutButton";
+import { GenieLampIcon } from "@/components/AppGenieLogo";
 
 export default function AppDetails() {
   const { id: appId } = useParams();
@@ -221,7 +222,11 @@ export default function AppDetails() {
           <SignOutButton />
           <div className="flex items-center gap-2 px-3 py-2 bg-emerald-500/5 border border-emerald-500/10 rounded-xl">
             <Sparkles className="w-4 h-4 text-emerald-500/60" />
-            <span className="text-[11px] font-semibold text-emerald-500/60">Powered by AppGenie AI</span>
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-emerald-500/60">
+              Powered by
+              <GenieLampIcon size={20} className="text-emerald-500/60" />
+              AppGenie AI
+            </span>
           </div>
         </div>
       </aside>
