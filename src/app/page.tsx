@@ -60,6 +60,107 @@ export default function Home() {
 
       <main>
         <section className="relative z-10 mx-auto max-w-7xl px-6 pt-24 pb-40 text-center">
+
+          {/* ── HERO BACKGROUND LAMP ── */}
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden">
+            {/* Outer radial glow */}
+            <div className="absolute h-[700px] w-[700px] rounded-full bg-emerald-500/5 blur-[120px]" />
+            <div className="absolute h-[400px] w-[400px] rounded-full bg-teal-400/8 blur-[80px]" />
+
+            {/* Rotating ring 1 */}
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+              className="absolute h-[560px] w-[560px] rounded-full border border-emerald-500/10"
+            />
+            {/* Rotating ring 2 (opposite) */}
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+              className="absolute h-[480px] w-[480px] rounded-full border border-teal-400/8 border-dashed"
+            />
+
+            {/* The GIANT lamp */}
+            <motion.div
+              animate={{
+                y: [0, -22, 0],
+                rotate: [-3, 3, -3],
+                scale: [1, 1.03, 1],
+              }}
+              transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+              className="relative flex items-center justify-center"
+            >
+              {/* Lamp glow layers */}
+              <div className="absolute inset-0 scale-110 rounded-full bg-emerald-400/10 blur-[60px]" />
+              <div className="absolute inset-0 scale-125 rounded-full bg-teal-300/6 blur-[90px]" />
+
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 64 64"
+                width={380}
+                height={380}
+                aria-hidden="true"
+                className="drop-shadow-[0_0_80px_rgba(16,185,129,0.25)]"
+                style={{ filter: "drop-shadow(0 0 40px rgba(16,185,129,0.18))" }}
+              >
+                <defs>
+                  <linearGradient id="lampBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#34d399" stopOpacity="0.18" />
+                    <stop offset="100%" stopColor="#2dd4bf" stopOpacity="0.08" />
+                  </linearGradient>
+                  <linearGradient id="lampLidGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#6ee7b7" stopOpacity="0.25" />
+                    <stop offset="100%" stopColor="#5eead4" stopOpacity="0.12" />
+                  </linearGradient>
+                  <radialGradient id="smokeGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#34d399" stopOpacity="0.5" />
+                    <stop offset="100%" stopColor="#34d399" stopOpacity="0" />
+                  </radialGradient>
+                </defs>
+                {/* Lamp body */}
+                <ellipse cx="30" cy="38" rx="19" ry="11" fill="url(#lampBodyGrad)" stroke="#34d399" strokeWidth="0.5" strokeOpacity="0.3" />
+                {/* Spout */}
+                <path d="M47 32 Q57 29 55 37 Q53 42 47 40 Z" fill="#2dd4bf" fillOpacity="0.15" stroke="#2dd4bf" strokeWidth="0.4" strokeOpacity="0.3" />
+                {/* Handle */}
+                <path d="M13 32 Q5 32 5 40 Q5 47 13 45" fill="none" stroke="#34d399" strokeWidth="3.5" strokeLinecap="round" strokeOpacity="0.25" />
+                {/* Lid */}
+                <ellipse cx="30" cy="27" rx="13" ry="5" fill="url(#lampLidGrad)" stroke="#6ee7b7" strokeWidth="0.5" strokeOpacity="0.35" />
+                {/* Knob */}
+                <circle cx="30" cy="22" r="3" fill="#6ee7b7" fillOpacity="0.3" />
+                {/* Smoke curl 1 */}
+                <path d="M30 19 Q35 13 30 8 Q25 3 30 -1" fill="none" stroke="#34d399" strokeWidth="2.5" strokeLinecap="round" strokeOpacity="0.35" />
+                {/* Smoke curl 2 */}
+                <path d="M37 17 Q41 11 37 7" fill="none" stroke="#34d399" strokeWidth="2" strokeLinecap="round" strokeOpacity="0.2" />
+                {/* Large star */}
+                <polygon points="54,8 55.5,12 59.5,12 56.3,14.5 57.5,18.5 54,16 50.5,18.5 51.7,14.5 48.5,12 52.5,12" fill="#6ee7b7" fillOpacity="0.4" />
+                {/* Small star */}
+                <polygon points="42,4 43,6.5 45.5,6.5 43.5,8 44.3,10.5 42,9 39.7,10.5 40.5,8 38.5,6.5 41,6.5" fill="#5eead4" fillOpacity="0.3" />
+              </svg>
+            </motion.div>
+
+            {/* Orbiting particles */}
+            {[0, 60, 120, 180, 240, 300].map((deg, i) => (
+              <motion.div
+                key={i}
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20 + i * 3, repeat: Infinity, ease: "linear", delay: i * 0.4 }}
+                className="absolute h-[320px] w-[320px]"
+                style={{ transformOrigin: "center" }}
+              >
+                <div
+                  className="absolute h-1.5 w-1.5 rounded-full bg-emerald-400/60"
+                  style={{
+                    top: "0%",
+                    left: "50%",
+                    transform: `translateX(-50%) rotate(${deg}deg) translateY(-160px)`,
+                    boxShadow: "0 0 6px rgba(16,185,129,0.8)",
+                  }}
+                />
+              </motion.div>
+            ))}
+          </div>
+          {/* ── END HERO BACKGROUND LAMP ── */}
+
           <StaggerContainer>
             <StaggerItem>
               <div className="mx-auto mb-8 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/5 px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
