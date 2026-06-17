@@ -62,7 +62,7 @@ export default function Home() {
         <section className="relative z-10 mx-auto max-w-7xl px-6 pt-24 pb-40 text-center">
 
           {/* ── HERO BACKGROUND LAMP ── */}
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden">
+          <div className="pointer-events-none absolute inset-0 flex items-start justify-center overflow-hidden" style={{ paddingTop: "60px" }}>
             {/* Outer radial glow */}
             <div className="absolute h-[700px] w-[700px] rounded-full bg-emerald-500/5 blur-[120px]" />
             <div className="absolute h-[400px] w-[400px] rounded-full bg-teal-400/8 blur-[80px]" />
