@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { GenieLampIcon } from "@/components/AppGenieLogo";
 
 function cn(...inputs: ClassValue[]) {
@@ -40,6 +40,29 @@ export function Sidebar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const search = searchParams.toString();
+
+  const { data: session } = useSession();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    if (!session?.user) return;
+
+    const fetchUnread = () => {
+      fetch("/api/notifications")
+        .then(res => res.json())
+        .then(data => {
+          if (Array.isArray(data)) {
+            const count = data.filter((n: { read: boolean }) => !n.read).length;
+            setUnreadCount(count);
+          }
+        })
+        .catch(err => console.error("Error fetching unread notifications:", err));
+    };
+
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 5000);
+    return () => clearInterval(interval);
+  }, [session]);
 
   return (
     <motion.aside
@@ -96,15 +119,31 @@ export function Sidebar() {
                 active ? "text-emerald-400 bg-emerald-500/10" : "text-slate-400"
               )}
             >
-              <item.icon className={cn("h-4.5 w-4.5 transition-transform group-hover:scale-110", active ? "text-emerald-400" : "text-slate-400 group-hover:text-slate-200")} />
+              <div className="relative flex items-center">
+                <item.icon className={cn("h-4.5 w-4.5 transition-transform group-hover:scale-110", active ? "text-emerald-400" : "text-slate-400 group-hover:text-slate-200")} />
+                {isCollapsed && item.label === "Notifications" && unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-1.5 w-1.5 rounded-full bg-emerald-400 ring-1 ring-slate-950 animate-pulse" />
+                )}
+              </div>
               {!isCollapsed && (
-                <motion.span
-                   initial={{ opacity: 0, x: -10 }}
-                   animate={{ opacity: 1, x: 0 }}
-                   className="text-xs"
-                >
-                  {item.label}
-                </motion.span>
+                <div className="flex flex-1 items-center justify-between">
+                  <motion.span
+                     initial={{ opacity: 0, x: -10 }}
+                     animate={{ opacity: 1, x: 0 }}
+                     className="text-xs"
+                  >
+                    {item.label}
+                  </motion.span>
+                  {item.label === "Notifications" && unreadCount > 0 && (
+                    <motion.span
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-emerald-500/20 px-1.5 text-[10px] font-bold text-emerald-400 border border-emerald-500/30"
+                    >
+                      {unreadCount}
+                    </motion.span>
+                  )}
+                </div>
               )}
               {active && (
                 <motion.div

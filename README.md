@@ -50,7 +50,7 @@ AppGenie is a complete, production-grade platform meeting all core requirements 
 
 ### 🌟 Bonus Features (4 Implemented)
 - [x] **CSV Import**: Bulk data processing using PapaParse for instant record creation.
-- [x] **In-App Notifications**: Real-time user feedback system for all system actions.
+- [x] **In-App Notifications**: Real-time user feedback system utilizing periodic client-side polling (every 5 seconds) for all system actions.
 - [x] **Workflow Automation**: Built-in trigger/action engine (e.g., auto-notifications on record creation).
 - [x] **Mobile/PWA Support**: Offline-capable Progressive Web App with service worker and manifest.
 

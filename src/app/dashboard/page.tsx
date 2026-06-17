@@ -47,6 +47,7 @@ function DashboardContent() {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
+    // Initial fetch
     Promise.all([
       fetch("/api/apps").then(res => res.json()),
       fetch("/api/notifications").then(res => res.json())
@@ -55,7 +56,35 @@ function DashboardContent() {
       setNotifications(notifsData);
       setIsLoading(false);
     });
+
+    // Set up polling for notifications every 5 seconds
+    const interval = setInterval(() => {
+      fetch("/api/notifications")
+        .then(res => res.json())
+        .then(notifsData => {
+          if (Array.isArray(notifsData)) {
+            setNotifications(notifsData);
+          }
+        })
+        .catch(err => console.error("Error polling notifications:", err));
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
+
+  // Mark notifications as read when visiting the notifications tab
+  useEffect(() => {
+    if (activeTab === "notifications") {
+      fetch("/api/notifications", { method: "PATCH" })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+          }
+        })
+        .catch(err => console.error("Error marking notifications as read:", err));
+    }
+  }, [activeTab]);
 
   const filteredApps = apps.filter(app => 
     app.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -238,7 +267,13 @@ function DashboardContent() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: idx * 0.05 }}
                     >
-                      <GlassContainer className="p-4 flex items-start gap-4 hover:border-emerald-500/30 transition-all">
+                      <GlassContainer className={cn(
+                        "p-4 flex items-start gap-4 hover:border-emerald-500/30 transition-all relative overflow-hidden",
+                        !notif.read && "border-emerald-500/20 bg-emerald-500/[0.02] shadow-[inset_0_0_12px_rgba(16,185,129,0.05)]"
+                      )}>
+                        {!notif.read && (
+                          <span className="absolute top-0 right-0 h-1.5 w-1.5 rounded-bl bg-emerald-400" />
+                        )}
                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400">
                           <Zap className="h-5 w-5" />
                         </div>
@@ -248,7 +283,7 @@ function DashboardContent() {
                             <span className="text-[10px] text-slate-500">{new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                           </div>
                           <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-emerald-500/60 flex items-center gap-1.5">
-                            <span className="h-1 w-1 rounded-full bg-emerald-500" />
+                            <span className={cn("h-1 w-1 rounded-full", notif.read ? "bg-emerald-500/50" : "bg-emerald-400 animate-pulse")} />
                             Workflow Automation Triggered
                           </p>
                         </div>
